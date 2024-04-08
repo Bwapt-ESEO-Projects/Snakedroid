@@ -7,4 +7,55 @@
     android:layout_height="match_parent"
     tools:context=".Shop">
 
+    <LinearLayout
+        android:layout_width="731dp"
+        android:layout_height="409dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.666">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="81dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="545dp"
+                android:layout_height="54dp"
+                android:layout_weight="5"
+                android:text="TextView" />
+
+            <ImageButton
+                android:id="@+id/button_exit"
+                android:layout_width="76dp"
+                android:layout_height="58dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/exit" />
+
+        </LinearLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerView2"
+            android:name="com.example.snakedroid.item_shop"
+            android:layout_width="match_parent"
+            android:layout_height="275dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
