@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="Title_Shop" tools:ignore="ExtraTranslation"> Magasin</string>
+
+    <string-array name="Menu_shop" tools:ignore="ExtraTranslation">
+        <item>Corps</item>
+        <item>Chapeau</item>
+        <item>Cbjet</item>
+    </string-array>
+
+</resources>
