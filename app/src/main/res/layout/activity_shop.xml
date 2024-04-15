@@ -46,8 +46,16 @@
                     android:orientation="vertical"/>
 
                 <LinearLayout
-                    android:id="@+id/cosmetics_hat"
+                    android:id="@+id/cosmetics_angle"
                     app:layout_constraintStart_toEndOf="@id/cosmetics_tail"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+
+                <LinearLayout
+                    android:id="@+id/cosmetics_hat"
+                    app:layout_constraintStart_toEndOf="@id/cosmetics_angle"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -59,6 +67,7 @@
         <Button
             android:id="@+id/valider"
             app:layout_constraintStart_toEndOf="@id/cosmetics"
+            android:background="@drawable/rectangle_button"
             android:shape="rectangle"
             android:layout_marginStart="20dp"
             android:layout_width="match_parent"

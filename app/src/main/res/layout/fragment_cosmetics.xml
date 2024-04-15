@@ -5,13 +5,30 @@
     android:layout_height="match_parent"
     tools:context=".CosmeticsFragment">
 
-    <ImageButton
-        android:id="@+id/cosmetics_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:contentDescription="Item to sell" />
+    <LinearLayout
+        android:id="@+id/cosmetics_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/cosmetics_button"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:background="@color/transparent"
+            android:contentDescription="Item to sell" />
+
+        <TextView
+            android:id="@+id/cosmetics_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:drawableEnd="@drawable/coin"/>
+    </LinearLayout>
+
 
 
 </FrameLayout>
