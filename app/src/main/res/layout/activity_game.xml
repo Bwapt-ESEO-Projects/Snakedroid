@@ -23,21 +23,16 @@
             android:layout_alignTop="@+id/surfaceview"
             android:layout_alignEnd="@+id/surfaceview"
             android:layout_alignBottom="@+id/surfaceview"
-            app:srcCompat="@drawable/map_16_desert" />
+            app:srcCompat="@drawable/map_big" />
 
         <SurfaceView
             android:id="@+id/surfaceview"
-            android:layout_width="508dp"
-            android:layout_height="378dp" />
+            android:layout_toLeftOf="@id/keys"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="6dp"/>
 
-        <TextView
-            android:id="@+id/score"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="0"
-            android:textColor="@color/white" />
+
 
         <LinearLayout
             android:id="@+id/keys"
@@ -90,6 +85,52 @@
 
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/surfaceview"
+            android:layout_marginTop="10dp"
+            android:text="Score : "
+            android:paddingLeft="6dp"
+            android:textColor="@color/white" />
+        <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/score_text"
+        android:layout_marginTop="10dp"
+        android:text="0"
+        android:paddingLeft="6dp"
+        android:textColor="@color/white" />
+        <ImageView
+            android:id="@+id/Money_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/score"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/coin"
+            android:paddingLeft="6dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/inter_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/Money_text"
+            android:layout_marginTop="10dp"
+            android:text=" : "
+            android:paddingLeft="6dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/Money_compteur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/inter_m"
+            android:layout_marginTop="10dp"
+            android:text="0"
+            android:paddingLeft="6dp"
+            android:textColor="@color/white" />
+
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
