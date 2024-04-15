@@ -22,7 +22,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private List<item_shop> fragments;
+    // private List<item_shop> fragments;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume()
     {
-        Intent intent_game= new Intent(MainActivity.this,Game.class);
-        Intent intent_shop=new Intent(MainActivity.this,Shop.class);
+        Intent intent_game = new Intent(MainActivity.this,Game.class);
+        Intent intent_shop = new Intent(MainActivity.this,Shop.class);
         super.onResume();
         binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
