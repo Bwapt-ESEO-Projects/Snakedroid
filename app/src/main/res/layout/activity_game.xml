@@ -8,12 +8,22 @@
     tools:context=".Game">
 
     <RelativeLayout
-        android:layout_width="764dp"
-        android:layout_height="389dp"
-        android:padding="6dp"
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
 
-        tools:layout_editor_absoluteY="4dp">
+        android:padding="6dp">
 
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@+id/surfaceview"
+            android:layout_alignTop="@+id/surfaceview"
+            android:layout_alignEnd="@+id/surfaceview"
+            android:layout_alignBottom="@+id/surfaceview"
+            app:srcCompat="@drawable/map_16_desert" />
 
         <SurfaceView
             android:id="@+id/surfaceview"

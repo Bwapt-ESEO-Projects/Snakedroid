@@ -2,9 +2,13 @@ package com.example.snakedroid;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -29,8 +33,9 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private SurfaceHolder holder;
 
+    private int scale =2;
     private String direction = "down";
-    private static final int body_size=32;
+    private static int body_size=16;
     private static final int default_nb_body=3;
 
     private static final int speed = 800;
@@ -55,6 +60,8 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         display = binding.surfaceview;
         score = binding.score;
         binding.surfaceview.getHolder().addCallback(this);
+
+        body_size=16*scale;
 
 
 
@@ -101,6 +108,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
         this.holder =surfaceHolder;
+        //holder.setFormat(PixelFormat.TRANSPARENT);
         init();
     }
 
@@ -134,11 +142,11 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     }
 
     private void addfood(){
-        int displaywidth = display.getWidth()-(body_size *2);
-        int displayheight = display.getHeight()-(body_size *2);
+        int displaywidth = display.getWidth()-(body_size *2 );
+        int displayheight = display.getHeight()-(body_size *2 );
 
-        int random_coord_x = new Random().nextInt(displaywidth/body_size);
-        int random_coord_y = new Random().nextInt(displayheight/body_size);
+        int random_coord_x = new Random().nextInt(displaywidth/body_size );
+        int random_coord_y = new Random().nextInt(displayheight/body_size );
 
         if((random_coord_x % 2)!=0){
 
@@ -148,7 +156,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
             random_coord_y++;
         }
-        food_pos_x  =(body_size * random_coord_x)+body_size;
+        food_pos_x  =(body_size* random_coord_x)+body_size;
         food_pos_y = (body_size * random_coord_y)+body_size;
     }
     private void moveSnake(){
@@ -171,21 +179,25 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                     case "right":
                         snake_item_list.get(0).setPosx((head_pos_x +(body_size*2)));
                         snake_item_list.get(0).setPosY((head_pos_y));
+                        snake_item_list.get(0).sens="right";
                         break;
 
 
                     case "left":
                         snake_item_list.get(0).setPosx((head_pos_x -(body_size*2)));
                         snake_item_list.get(0).setPosY((head_pos_y));
+                        snake_item_list.get(0).sens="left";
                         break;
 
                     case "up":
                         snake_item_list.get(0).setPosx((head_pos_x ));
                         snake_item_list.get(0).setPosY((head_pos_y)+(body_size*2));
+                        snake_item_list.get(0).sens="up";
                         break;
                     case "down":
                         snake_item_list.get(0).setPosx((head_pos_x));
-                        snake_item_list.get(0).setPosY((head_pos_y - (body_size*2)));
+                        snake_item_list.get(0).setPosY((head_pos_y- (body_size*2)));
+                        snake_item_list.get(0).sens="down";
                         break;
 
                     }
@@ -206,19 +218,34 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                 runOnUiThread(() -> builder.show());
 
                 }else{
-                    Drawable d = getResources().getDrawable(R.drawable.snake_body) ;
-
+                    Bitmap head =turnbitmap(snake_item_list.get(0).sens,R.drawable.snake_head,false,scale);
                     canvas = holder.lockCanvas();
                     canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-                    canvas.drawCircle(snake_item_list.get(0).getPosx(),snake_item_list.get(0).getPosY(),body_size,createbodycolor());
+                    canvas.drawBitmap(head,snake_item_list.get(0).getPosx()-16*scale,snake_item_list.get(0).getPosY()-16*scale,null);
+                    //canvas.drawCircle(snake_item_list.get(0).getPosx(),snake_item_list.get(0).getPosY(),body_size,createbodycolor());
                     canvas.drawCircle(food_pos_x,food_pos_y,body_size,createbodycolor());
+                    String buffersens=snake_item_list.get(0).sens;
                     for (int i = 1; i < snake_item_list.size(); i++) {
+                        String buffersenstemp = snake_item_list.get(i).sens;
+                        snake_item_list.get(i).sens=buffersens;
+                        buffersens = buffersenstemp;
                         int getposXtemp = snake_item_list.get(i).getPosx();
                         int getposYtemp = snake_item_list.get(i).getPosY();
-
+                        Bitmap body = turnbitmap(snake_item_list.get(i).sens,R.drawable.snake_body,false,scale)  ;
+                        Bitmap tail = turnbitmap(snake_item_list.get(i).sens,R.drawable.snake_tail,true,scale) ;
                         snake_item_list.get(i).setPosx(head_pos_x);
                         snake_item_list.get(i).setPosY(head_pos_y);
-                        canvas.drawCircle(snake_item_list.get(i).getPosx(),snake_item_list.get(i).getPosY(),body_size,createbodycolor());
+                        if (i==(snake_item_list.size()-1))
+                        {
+
+                            canvas.drawBitmap(tail,snake_item_list.get(i).getPosx()-16*scale,snake_item_list.get(i).getPosY()-16*scale,null);
+                        }
+                        else
+                        {
+                            canvas.drawBitmap(body,snake_item_list.get(i).getPosx()-16*scale,snake_item_list.get(i).getPosY()-16*scale,null);
+                        }
+
+                       //canvas.drawCircle(snake_item_list.get(i).getPosx(),snake_item_list.get(i).getPosY(),body_size,createbodycolor());
 
                         head_pos_y = getposYtemp;
                         head_pos_x = getposXtemp;
@@ -278,5 +305,69 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         }
         return pointcolor;
 
+    }
+
+    private Bitmap turnbitmap(String sens, int img,boolean inverse,int scale)
+    {
+        Bitmap tobescaledhead = BitmapFactory.decodeResource(binding.keys.getResources(),img ) ;
+        Bitmap head = Bitmap.createScaledBitmap(tobescaledhead,tobescaledhead.getWidth()*scale,tobescaledhead.getHeight()*scale,true);
+        Matrix matrix = new Matrix();
+
+        Bitmap ret = head ;
+        switch (sens){
+
+            case "right":
+                if(inverse)
+                {
+                    matrix.postRotate(90);
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }else{
+                    matrix.postRotate(-90);
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }
+
+                break;
+
+
+            case "left":
+                if(inverse)
+                {
+                    matrix.postRotate(-90);
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }else{
+
+                    matrix.postRotate(90);
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }
+
+                break;
+
+            case "up":
+
+                if(inverse)
+                {
+                    matrix.postRotate(180);
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }else{
+
+
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }
+
+                break;
+            case "down":
+                if(inverse)
+                {
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }else{
+
+                    matrix.postRotate(180);
+                    ret= Bitmap.createBitmap(head,0,0, head.getWidth(),head.getHeight(),matrix,true);
+                }
+
+                break;
+
+        }
+        return ret;
     }
 }

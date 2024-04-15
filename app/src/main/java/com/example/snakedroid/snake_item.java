@@ -3,6 +3,7 @@ package com.example.snakedroid;
 public class snake_item {
 
     private int posx,posY;
+    String sens ="right";
 
 
 
