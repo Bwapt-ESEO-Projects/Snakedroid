@@ -38,12 +38,12 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private int scale =1;
     private String direction = "down";
-    private static int body_size=16;
+    private static int body_size=20;
     private static final int default_nb_body=3;
 
-    private static final int speed = 800;
+    private static final int speed = 700;
     private int Score = 0;
-    private int nb_coin =0;
+    private int nb_coin =-1;
     private int food_pos_x, food_pos_y;
     private int coin_pos_x,coin_pos_y;
     private Timer timer;
@@ -63,12 +63,14 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     private int id_img_tail;
     private int id_img_food;
 
-
+    private String nextsens;
     private boolean enable = false;
     private boolean gameover = false;
     private SharedPreferences Data;
     private Context context_game ;
     private boolean command = true;
+
+    //gestion du serviceutiliser pour le timer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,11 +111,6 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         coin = get_Bitmap(R.drawable.coin,scale);
         diamond = get_Bitmap(R.drawable.diamon,scale);
 
-    }
-    @Override
-    public void onResume() {
-
-        super.onResume();
         binding.keyUp.setOnClickListener(view -> {
 
 
@@ -325,10 +322,10 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                     Bitmap head_calib =turnbitmap(snake_item_list.get(0).sens,head,scale,false);
                     canvas = holder.lockCanvas();
                     canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-                    canvas.drawBitmap(head_calib,snake_item_list.get(0).getPosx()-16*scale,snake_item_list.get(0).getPosY()-16*scale,null);
+                    canvas.drawBitmap(head_calib,snake_item_list.get(0).getPosx()-body_size*scale,snake_item_list.get(0).getPosY()-body_size*scale,null);
 
-                    canvas.drawBitmap(food,food_pos_x-16*scale,food_pos_y-16*scale,null);
-                    canvas.drawBitmap(coin,coin_pos_x-16*scale,coin_pos_y-16*scale,null);
+                    canvas.drawBitmap(food,food_pos_x-body_size*scale,food_pos_y-body_size*scale,null);
+                    canvas.drawBitmap(coin,coin_pos_x-body_size*scale,coin_pos_y-body_size*scale,null);
 
                     String buffersens=snake_item_list.get(0).sens;
                     for (int i = 1; i < snake_item_list.size(); i++) {
@@ -344,11 +341,11 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                         if (i==(snake_item_list.size()-1))
                         {
 
-                            canvas.drawBitmap(tail_calib,snake_item_list.get(i).getPosx()-16*scale,snake_item_list.get(i).getPosY()-16*scale,null);
+                            canvas.drawBitmap(tail_calib,snake_item_list.get(i).getPosx()-body_size*scale,snake_item_list.get(i).getPosY()-body_size*scale,null);
                         }
                         else
                         {
-                            canvas.drawBitmap(body_calib,snake_item_list.get(i).getPosx()-16*scale,snake_item_list.get(i).getPosY()-16*scale,null);
+                            canvas.drawBitmap(body_calib,snake_item_list.get(i).getPosx()-body_size*scale,snake_item_list.get(i).getPosY()-body_size*scale,null);
                         }
 
                         head_pos_y = getposYtemp;
