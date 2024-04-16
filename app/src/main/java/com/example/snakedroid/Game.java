@@ -33,7 +33,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     private SurfaceView display;
     private TextView score;
     private TextView Money;
-
+    private Intent thisintent;
     private SurfaceHolder holder;
 
     private int scale =1;
@@ -93,7 +93,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         body_size=16*scale;
         context_game = binding.getRoot().getContext();
         Data =getPreferences(context_game.MODE_PRIVATE);
-
+        thisintent = getIntent();
 
         //recuperation des valeurs si vide valeur par défaut
 
@@ -207,7 +207,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     }
 
     private void addCoin(){
-        nb_coin ++;
+        nb_coin++;
         int displaywidth = display.getWidth()-(body_size *2 );
         int displayheight = display.getHeight()-(body_size *2 );
 
@@ -291,13 +291,15 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
                     timer.purge();
                     timer.cancel();
-
+                    Bundle bundle = thisintent.getExtras();
+                    String nom =(String) bundle.getSerializable("name");
                 AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
-                builder.setMessage("Your score ="+Score);
+                builder.setMessage(nom +" Your score ="+Score);
                 builder.setTitle("Game Over");
                 builder.setCancelable(false);
                 builder.setPositiveButton("go back to menu", (dialogInterface, i) -> {
                     Intent intent= new Intent(Game.this,MainActivity.class);
+                    intent.putExtra("name",nom);
                     startActivity(intent);
                 });
                 builder.setNeutralButton("start Again", (dialogInterface, i) -> {
@@ -313,8 +315,14 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                 runOnUiThread(() -> builder.show());
                 int money_temp =Data.getInt("MONEY_VALUE",0);
                 int moneytosend=money_temp+ nb_coin;
+                int player_count = Data.getInt("NB_PLAYER",0);
                 SharedPreferences.Editor editor = Data.edit();
-                editor.putInt("LAST_SCORE_VALUE",Score);
+                player_count++;
+                String scoreid = "SCORE"+player_count;
+                String nameid  = "NAME"+player_count;
+                editor.putInt(scoreid,Score);
+                editor.putString(nameid,nom);
+                editor.putInt("NB_PLAYER",player_count);
                 editor.putInt("MONEY_VALUE",moneytosend);
                 editor.apply();
 

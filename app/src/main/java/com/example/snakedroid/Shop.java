@@ -18,7 +18,7 @@ public class Shop extends AppCompatActivity {
 
     private ActivityShopBinding binding;
 
-    private List<item_shop> fragments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -26,18 +26,7 @@ public class Shop extends AppCompatActivity {
         binding = ActivityShopBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        fragments = new ArrayList<>();
 
-
-        fragments.add(item_shop.newInstance(R.drawable.apple , "ceci est une pomme"));
-        fragments.add(item_shop.newInstance(R.drawable.banana , "ceci est une banane"));
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        for(item_shop frag : fragments){
-            ft.add(R.id.fragmentContainerView2,frag);
-
-        }
-        ft.commit();
 
 
     }
