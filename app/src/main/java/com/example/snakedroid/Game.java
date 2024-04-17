@@ -293,18 +293,9 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                     timer.cancel();
                     Bundle bundle = thisintent.getExtras();
                     String nom =(String) bundle.getSerializable("name");
-                    int money_temp =Data.getInt("MONEY_VALUE",0);
-                    int moneytosend=money_temp+ nb_coin;
-                    int player_count = Data.getInt("NB_PLAYER",0);
-                    SharedPreferences.Editor editor = Data.edit();
-                    player_count++;
-                    String scoreid = "SCORE"+player_count;
-                    String nameid  = "NAME"+player_count;
-                    editor.putInt(scoreid,Score);
-                    editor.putString(nameid,nom);
-                    editor.putInt("NB_PLAYER",player_count);
-                    editor.putInt("MONEY_VALUE",moneytosend);
-                    editor.apply();
+
+                    save(nom);
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
                 builder.setMessage(nom +" Your score ="+Score);
                 builder.setTitle("Game Over");
@@ -493,5 +484,37 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
 
         return ret;
+    }
+
+    private void save(String username){
+
+        int money_temp =Data.getInt("MONEY_VALUE",0);
+        int moneytosend=money_temp+ nb_coin;
+        int player_count = Data.getInt("NB_PLAYER",0);
+        SharedPreferences.Editor editor = Data.edit();
+        boolean save_done =false;
+        for (int i = 0; i < player_count; i++) {
+            String key_name ="NAME"+i;
+            if (username == Data.getString(key_name,"")){
+                String key_score = "SCORE"+i;
+                editor.putInt(key_score,Score);
+                    save_done=true;
+
+            }
+        }
+        if (save_done == false){
+
+            player_count++;
+            String scoreid = "SCORE"+player_count;
+            String nameid  = "NAME"+player_count;
+            editor.putInt(scoreid,Score);
+            editor.putString(nameid,username);
+            editor.putInt("NB_PLAYER",player_count);
+            editor.putInt("MONEY_VALUE",moneytosend);
+            save_done=true;
+
+        }
+        editor.apply();
+
     }
 }
