@@ -293,38 +293,42 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                     timer.cancel();
                     Bundle bundle = thisintent.getExtras();
                     String nom =(String) bundle.getSerializable("name");
+                    int money_temp =Data.getInt("MONEY_VALUE",0);
+                    int moneytosend=money_temp+ nb_coin;
+                    int player_count = Data.getInt("NB_PLAYER",0);
+                    SharedPreferences.Editor editor = Data.edit();
+                    player_count++;
+                    String scoreid = "SCORE"+player_count;
+                    String nameid  = "NAME"+player_count;
+                    editor.putInt(scoreid,Score);
+                    editor.putString(nameid,nom);
+                    editor.putInt("NB_PLAYER",player_count);
+                    editor.putInt("MONEY_VALUE",moneytosend);
+                    editor.apply();
                 AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
                 builder.setMessage(nom +" Your score ="+Score);
                 builder.setTitle("Game Over");
                 builder.setCancelable(false);
                 builder.setPositiveButton("go back to menu", (dialogInterface, i) -> {
                     Intent intent= new Intent(Game.this,MainActivity.class);
-                    intent.putExtra("name",nom);
+
                     startActivity(intent);
                 });
                 builder.setNeutralButton("start Again", (dialogInterface, i) -> {
                     if(enable ==false){
 
                         Intent intent= new Intent(Game.this,Game.class);
+                        intent.putExtra("name",nom);
                         startActivity(intent);
                         enable =true;
+                        Game.this.finish();
+
                     }
 
 
                 });
                 runOnUiThread(() -> builder.show());
-                int money_temp =Data.getInt("MONEY_VALUE",0);
-                int moneytosend=money_temp+ nb_coin;
-                int player_count = Data.getInt("NB_PLAYER",0);
-                SharedPreferences.Editor editor = Data.edit();
-                player_count++;
-                String scoreid = "SCORE"+player_count;
-                String nameid  = "NAME"+player_count;
-                editor.putInt(scoreid,Score);
-                editor.putString(nameid,nom);
-                editor.putInt("NB_PLAYER",player_count);
-                editor.putInt("MONEY_VALUE",moneytosend);
-                editor.apply();
+
 
                 }else{
                     Bitmap head_calib =turnbitmap(snake_item_list.get(0).sens,head,scale,false);
