@@ -33,7 +33,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     private SurfaceView display;
     private TextView score;
     private TextView Money;
-
+    private Intent thisintent;
     private SurfaceHolder holder;
 
     private int scale =1;
@@ -92,8 +92,8 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
         body_size=16*scale;
         context_game = binding.getRoot().getContext();
-        Data = getPreferences(context_game.MODE_PRIVATE);
-
+        Data =getPreferences(context_game.MODE_PRIVATE);
+        thisintent = getIntent();
 
         //recuperation des valeurs si vide valeur par défaut
 
@@ -169,7 +169,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         score.setText("0");
         Score=0;
         Money.setText("0");
-        nb_coin=50;
+        nb_coin=0;
         direction = "right";
 
         int start_coord_x =(body_size) * default_nb_body;
@@ -205,7 +205,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     }
 
     private void addCoin(){
-        nb_coin ++;
+        nb_coin++;
         int displaywidth = display.getWidth()-(body_size *2 );
         int displayheight = display.getHeight()-(body_size *2 );
 
@@ -289,32 +289,35 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
                     timer.purge();
                     timer.cancel();
+                    Bundle bundle = thisintent.getExtras();
+                    String nom =(String) bundle.getSerializable("name");
+
+                    save(nom);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
-                builder.setMessage("Your score ="+Score);
+                builder.setMessage(nom +" Your score ="+Score);
                 builder.setTitle("Game Over");
                 builder.setCancelable(false);
                 builder.setPositiveButton("go back to menu", (dialogInterface, i) -> {
                     Intent intent= new Intent(Game.this,MainActivity.class);
+
                     startActivity(intent);
                 });
                 builder.setNeutralButton("start Again", (dialogInterface, i) -> {
                     if(enable ==false){
 
                         Intent intent= new Intent(Game.this,Game.class);
+                        intent.putExtra("name",nom);
                         startActivity(intent);
                         enable =true;
+                        Game.this.finish();
+
                     }
 
 
                 });
                 runOnUiThread(() -> builder.show());
-                int money_temp =Data.getInt("MONEY_VALUE",0);
-                int moneytosend=money_temp+ nb_coin;
-                SharedPreferences.Editor editor = Data.edit();
-                editor.putInt("LAST_SCORE_VALUE",Score);
-                editor.putInt("MONEY_VALUE",moneytosend);
-                editor.apply();
+
 
                 }else{
                     Bitmap head_calib =turnbitmap(snake_item_list.get(0).sens,head,scale,false);
@@ -479,5 +482,37 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
 
         return ret;
+    }
+
+    private void save(String username){
+
+        int money_temp =Data.getInt("MONEY_VALUE",0);
+        int moneytosend=money_temp+ nb_coin;
+        int player_count = Data.getInt("NB_PLAYER",0);
+        SharedPreferences.Editor editor = Data.edit();
+        boolean save_done =false;
+        for (int i = 0; i < player_count; i++) {
+            String key_name ="NAME"+i;
+            if (username == Data.getString(key_name,"")){
+                String key_score = "SCORE"+i;
+                editor.putInt(key_score,Score);
+                    save_done=true;
+
+            }
+        }
+        if (save_done == false){
+
+            player_count++;
+            String scoreid = "SCORE"+player_count;
+            String nameid  = "NAME"+player_count;
+            editor.putInt(scoreid,Score);
+            editor.putString(nameid,username);
+            editor.putInt("NB_PLAYER",player_count);
+            editor.putInt("MONEY_VALUE",moneytosend);
+            save_done=true;
+
+        }
+        editor.apply();
+
     }
 }

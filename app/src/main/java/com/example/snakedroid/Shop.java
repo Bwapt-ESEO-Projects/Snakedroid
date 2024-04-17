@@ -58,7 +58,7 @@ public class Shop extends AppCompatActivity {
         equippedTailImg = DataGame.getInt("IMG_TAIL", R.drawable.snake_tail);
         equippedAngleImg = DataGame.getInt("IMG_ANGLE", R.drawable.snake_body_angle);
         equippedHatImg = DataGame.getInt("IMG_HAT", R.drawable.wizard_hat);
-        
+
         binding.money.setText("Money : " + currentMoney);
 
         List<CosmeticsFragment> cosmeticHeads = new ArrayList<>();

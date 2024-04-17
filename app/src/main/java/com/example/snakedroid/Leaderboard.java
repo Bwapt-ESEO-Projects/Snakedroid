@@ -1,24 +1,45 @@
 package com.example.snakedroid;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.view.View;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.example.snakedroid.databinding.ActivityLeaderboardBinding;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Leaderboard extends AppCompatActivity {
 
+    private ActivityLeaderboardBinding binding;
+
+    private List<leaderboard_line> fragments;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        binding = ActivityLeaderboardBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_leaderboard);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        fragments = new ArrayList<>();
+        SharedPreferences prefs =getSharedPreferences("Game",MODE_PRIVATE);
+        for (int i = 1; i < prefs.getInt("NB_PLAYER",0); i++) {
+            String nom= "NAME"+i;
+            String score = "SCORE"+i;
+            fragments.add(leaderboard_line.newInstance( prefs.getString(nom,"none"), prefs.getInt(score,0)));
+        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        for(leaderboard_line frag : fragments) {
+            ft.add(R.id.fragment,frag);
+        }
+        ft.commit();
+
+
     }
+
 }

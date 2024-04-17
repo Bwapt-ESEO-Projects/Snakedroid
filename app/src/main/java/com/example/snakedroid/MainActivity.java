@@ -6,15 +6,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import androidx.fragment.app.FragmentTransaction;
 import com.example.snakedroid.databinding.ActivityMainBinding;
-import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Locale;
@@ -22,7 +16,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    // private List<item_shop> fragments;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,13 +37,16 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent intent_game = new Intent(MainActivity.this,Game.class);
         Intent intent_shop = new Intent(MainActivity.this,Shop.class);
+        Intent intent_leaderboard = new Intent(MainActivity.this,Leaderboard.class);
+
         super.onResume();
         binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-               startActivity(intent_game);
-
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.add(R.id.fragment_in,formlaire.newInstance());
+                ft.commit();
 
             }
         });
@@ -59,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(intent_shop);
+            }
+        });
+
+        binding.buttonLeaderboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(intent_leaderboard);
             }
         });
 
