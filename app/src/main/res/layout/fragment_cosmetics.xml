@@ -12,8 +12,10 @@
         android:orientation="vertical">
         <ImageButton
             android:id="@+id/cosmetics_button"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:background="@color/transparent"

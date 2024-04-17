@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.snakedroid.databinding.FragmentCosmeticsBinding;
@@ -18,8 +19,6 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class CosmeticsFragment extends Fragment {
-
-    private FragmentCosmeticsBinding binding;
 
     private static final int COSMETIC_ID = 0;
 
@@ -62,19 +61,19 @@ public class CosmeticsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentCosmeticsBinding.inflate(inflater, container, false);
+        com.example.snakedroid.databinding.FragmentCosmeticsBinding fragmentBinding = FragmentCosmeticsBinding.inflate(inflater, container, false);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mCosmeticId);
         BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
         drawable.setAntiAlias(false);
         drawable.setFilterBitmap(false);
-        binding.cosmeticsButton.setImageDrawable(drawable);
-        binding.cosmeticsPrice.setText(mCosmeticPrice);
+        fragmentBinding.cosmeticsButton.setImageDrawable(drawable);
+        fragmentBinding.cosmeticsPrice.setText(mCosmeticPrice);
 
         // Inflate the layout for this fragment
-        return binding.getRoot();
+        return fragmentBinding.getRoot();
     }
 
     public void setBought(boolean bought) {
@@ -87,10 +86,6 @@ public class CosmeticsFragment extends Fragment {
 
     public void setEquipped(boolean equipped) {
         this.isEquipped = equipped;
-    }
-
-    public boolean getEquipped() {
-        return this.isEquipped;
     }
 
     public int getPrice() {

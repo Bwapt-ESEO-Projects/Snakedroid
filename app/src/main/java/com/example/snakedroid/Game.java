@@ -92,17 +92,15 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
         body_size=16*scale;
         context_game = binding.getRoot().getContext();
-        Data =getPreferences(context_game.MODE_PRIVATE);
+        Data = getPreferences(context_game.MODE_PRIVATE);
 
 
         //recuperation des valeurs si vide valeur par défaut
 
-        id_img_body =Data.getInt("IMG_BODY" ,R.drawable.snake_body);
+        id_img_body = Data.getInt("IMG_BODY" ,R.drawable.snake_body);
         id_img_head = Data.getInt("IMG_HEAD" ,R.drawable.snake_head);
         id_img_tail = Data.getInt("IMG_TAIL" ,R.drawable.snake_tail);
-        id_img_food =Data.getInt("IMG_FOOD" ,R.drawable.apple);
-
-
+        id_img_food = Data.getInt("IMG_FOOD" ,R.drawable.apple);
 
         head = get_Bitmap(id_img_head,scale);
         body = get_Bitmap(id_img_body,scale);
@@ -171,7 +169,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         score.setText("0");
         Score=0;
         Money.setText("0");
-        nb_coin=0;
+        nb_coin=50;
         direction = "right";
 
         int start_coord_x =(body_size) * default_nb_body;
