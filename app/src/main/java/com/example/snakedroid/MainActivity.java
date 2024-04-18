@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        //// Configuration de la langue
+
         Resources res = getResources();
         Configuration conf = res.getConfiguration();
         conf.setLocale((new Locale("fr")));
@@ -35,35 +38,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume()
     {
-        Intent intent_game = new Intent(MainActivity.this,Game.class);
+        /////// Intent pour les boutons de redirection vers les pages Game, Shop et Leaderboard
+
         Intent intent_shop = new Intent(MainActivity.this,Shop.class);
         Intent intent_leaderboard = new Intent(MainActivity.this,Leaderboard.class);
 
         super.onResume();
-        binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        binding.buttonPlay.setOnClickListener(view -> {
 
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.add(R.id.fragment_in,formlaire.newInstance());
-                ft.commit();
-
-            }
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.fragment_in,formlaire.newInstance());
+            ft.commit();
         });
 
-        binding.buttonShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(intent_shop);
-            }
-        });
+        binding.buttonShop.setOnClickListener(view -> startActivity(intent_shop));
 
-        binding.buttonLeaderboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(intent_leaderboard);
-            }
-        });
+        binding.buttonLeaderboard.setOnClickListener(view -> startActivity(intent_leaderboard));
 
     }
 }

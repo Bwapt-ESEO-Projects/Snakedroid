@@ -13,15 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CosmeticsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+//// Fragment pour les cosmétiques comporant l'image et le prix
 public class CosmeticsFragment extends Fragment {
 
     private static final int COSMETIC_ID = 0;
-
     private static final String COSMETIC_PRICE = "cosmeticPrice";
     private int mCosmeticId;
     private String mCosmeticPrice;
@@ -32,17 +27,10 @@ public class CosmeticsFragment extends Fragment {
     public CosmeticsFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param cosmeticPrice Parameter 1.
-     * @param cosmeticId Parameter 2.
-     * @return A new instance of fragment CosmeticsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CosmeticsFragment newInstance(String cosmeticPrice, int cosmeticId) {
+
+        //// Création d'un nouveau fragment pour les cosmétiques
+
         CosmeticsFragment fragment = new CosmeticsFragment();
         Bundle args = new Bundle();
         args.putInt(String.valueOf(COSMETIC_ID), cosmeticId);
@@ -63,12 +51,19 @@ public class CosmeticsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        com.example.snakedroid.databinding.FragmentCosmeticsBinding fragmentBinding = FragmentCosmeticsBinding.inflate(inflater, container, false);
+
+        // Binding du fragment Cosmetics
+
+        @NonNull FragmentCosmeticsBinding fragmentBinding = FragmentCosmeticsBinding.inflate(inflater, container, false);
+
+        //// Tentative de redimensionnement de l'image des cosmétiques
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), mCosmeticId);
         BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
         drawable.setAntiAlias(false);
         drawable.setFilterBitmap(false);
+
+
         fragmentBinding.cosmeticsButton.setImageDrawable(drawable);
         fragmentBinding.cosmeticsPrice.setText(mCosmeticPrice);
 
@@ -76,19 +71,19 @@ public class CosmeticsFragment extends Fragment {
         return fragmentBinding.getRoot();
     }
 
-    public void setBought(boolean bought) {
+    public void setBought(boolean bought) { //// Setter pour l'achat des cosmétiques
         this.isBought = bought;
     }
 
     public boolean getBought() {
         return this.isBought;
-    }
+    } //// Getter pour l'achat des cosmétiques
 
-    public void setEquipped(boolean equipped) {
+    public void setEquipped(boolean equipped) {     //// Setter pour l'équipement des cosmétiques
         this.isEquipped = equipped;
     }
 
     public int getPrice() {
         return Integer.parseInt(mCosmeticPrice);
-    }
+    }   //// Getter pour le prix des cosmétiques
 }

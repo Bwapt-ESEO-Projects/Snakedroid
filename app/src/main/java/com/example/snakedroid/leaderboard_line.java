@@ -51,10 +51,13 @@ public class leaderboard_line extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //// Affichage des noms et scores des joueurs dans le leaderboard
+
         binding = FragmentLeaderboardLineBinding.inflate(inflater,container,false);
 
         binding.textname.setText("nom : "+ mnom);
-        binding.textscore.setText("score :" + mscore);
+        binding.textscore.setText("score : " + mscore);
 
         return binding.getRoot();
     }

@@ -9,10 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -23,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.snakedroid.databinding.ActivityGameBinding;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,7 +35,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
     private Intent thisintent;
     private SurfaceHolder holder;
 
-    private int scale =1;
+    private final int scale = 1;
     private String direction = "down";
     private static int body_size=20;
     private static final int default_nb_body=3;
@@ -50,27 +49,17 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private Canvas canvas = null;
 
-    private Paint pointcolor = null;
     private Bitmap head=null;
     private Bitmap body=null;
     private Bitmap tail =null;
     private Bitmap food =null;
-    private Bitmap diamond =null;
     private Bitmap coin =null;
 
-    private int id_img_head;
-    private int id_img_body;
-    private int id_img_tail;
-    private int id_img_food;
-
-    private String nextsens;
     private boolean enable = false;
     private boolean gameover = false;
     private SharedPreferences Data;
-    private Context context_game ;
     private boolean command = true;
 
-    //gestion du serviceutiliser pour le timer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,32 +71,40 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        //// Configuration de l'affichage du jeu, initialisation des variables
+
         display = binding.surfaceview;
         score = binding.score;
         Money = binding.MoneyCompteur;
         binding.surfaceview.getHolder().addCallback(this);
 
-        //binding.imageView.setImageBitmap(BitmapFactory.decodeResource(binding.imageView.getResources(),R.drawable.map_big));
-
-
         body_size=16*scale;
-        context_game = binding.getRoot().getContext();
-        Data =getPreferences(context_game.MODE_PRIVATE);
+
+        Context context_game = binding.getRoot().getContext();
+
+        //// Récupération des données sauvegardées
+
+        Data = getPreferences(context_game.MODE_PRIVATE);
         thisintent = getIntent();
 
         //recuperation des valeurs si vide valeur par défaut
 
-        id_img_body = Data.getInt("IMG_BODY" ,R.drawable.snake_body);
-        id_img_head = Data.getInt("IMG_HEAD" ,R.drawable.snake_head);
-        id_img_tail = Data.getInt("IMG_TAIL" ,R.drawable.snake_tail);
-        id_img_food = Data.getInt("IMG_FOOD" ,R.drawable.apple);
+        int id_img_body = Data.getInt("IMG_BODY", R.drawable.snake_body);
+        int id_img_head = Data.getInt("IMG_HEAD", R.drawable.snake_head);
+        int id_img_tail = Data.getInt("IMG_TAIL", R.drawable.snake_tail);
+        int id_img_food = Data.getInt("IMG_FOOD", R.drawable.apple);
 
-        head = get_Bitmap(id_img_head,scale);
-        body = get_Bitmap(id_img_body,scale);
-        tail = get_Bitmap(id_img_tail,scale);
-        food = get_Bitmap(id_img_food,scale);
-        coin = get_Bitmap(R.drawable.coin,scale);
-        diamond = get_Bitmap(R.drawable.diamon,scale);
+        //// Initialisation des images du jeu
+
+        head = get_Bitmap(id_img_head);
+        body = get_Bitmap(id_img_body);
+        tail = get_Bitmap(id_img_tail);
+        food = get_Bitmap(id_img_food);
+        coin = get_Bitmap(R.drawable.coin);
+        Bitmap diamond = get_Bitmap(R.drawable.diamon);
+
+
+        //// Gestion des touches de déplacement du serpent
 
         binding.keyUp.setOnClickListener(view -> {
 
@@ -146,22 +143,27 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+
+        //// Initialisation du board de jeu
+
         this.holder =surfaceHolder;
         holder.setFormat(PixelFormat.TRANSPARENT);
         display.setZOrderOnTop(true);
         init();
     }
 
+    //// Font partie de l'interface SurfaceHolder.Callback
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
     }
 
     public void surfaceDestroyed(@NonNull SurfaceHolder holder){
-
-
     }
 
+    ///////////////////////////////////////////////////////////
+
+
+    //// Initialisation du jeu
     private void init(){
 
         gameover =false;
@@ -172,7 +174,9 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         nb_coin=0;
         direction = "right";
 
-        int start_coord_x =(body_size) * default_nb_body;
+        int start_coord_x =(body_size) * default_nb_body; // position de départ du serpent
+
+        //// Création du serpent
 
         for (int i = 0; i < default_nb_body; i++) {
             snake_item body = new snake_item(start_coord_x,body_size);
@@ -180,10 +184,14 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
             start_coord_x =- (body_size*2);
         }
 
+        //// Ajout de la nourriture et des pièces
+
         addfood();
         addCoin();
         moveSnake();
     }
+
+    //// Ajout de la nourriture sur le board
 
     private void addfood(){
         int displaywidth = display.getWidth()-(body_size *2 );
@@ -204,6 +212,8 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         food_pos_y = (body_size * random_coord_y)+body_size;
     }
 
+    //// Ajout de pièces sur le board
+
     private void addCoin(){
         nb_coin++;
         int displaywidth = display.getWidth()-(body_size *2 );
@@ -223,38 +233,47 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         coin_pos_x  =(body_size* random_coord_x)+body_size;
         coin_pos_y = (body_size * random_coord_y)+body_size;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Money.setText(String.valueOf(nb_coin));
-            }
-        });
+        //// Affichage du nombre de pièces
+
+        runOnUiThread(() -> Money.setText(String.valueOf(nb_coin)));
 
     }
+
+    //// Gestion du déplacement du serpent
     private void moveSnake(){
+
+        //// Initialisation du timer
 
         if (timer == null) {
             timer = new Timer();
         }
 
+        //// Incrémentation du timer et actualisation du board
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (gameover==false && command){
+
+                //// Gestion du game over
+
+                if (!gameover && command){
                     command=false;
+
+
+                //// Gestion de la collision avec la nourriture et les pièces
+
                 int head_pos_x = snake_item_list.get(0).getPosx();
                 int head_pos_y = snake_item_list.get(0).getPosY();
 
                 if(head_pos_y == food_pos_y && head_pos_x==food_pos_x){
-
                     grow();
                     addfood();
                 }
                 if(head_pos_y == coin_pos_y && head_pos_x==coin_pos_x){
-
-
                     addCoin();
                 }
+
+
+                //// Actualisation de la position du serpent
 
                 switch (direction){
 
@@ -284,27 +303,36 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                         break;
 
                     }
-                if(checkgameOver(head_pos_x,head_pos_y) && gameover==false){
+
+                //// Gestion du game over
+
+                if(checkgameOver(head_pos_x,head_pos_y) && !gameover){
                     gameover=true;
 
-                    timer.purge();
+                    timer.purge(); //// Arrêt du timer
                     timer.cancel();
+
+                    //// Récupération du nom du joueur
+
                     Bundle bundle = thisintent.getExtras();
+                    assert bundle != null;
                     String nom =(String) bundle.getSerializable("name");
 
                     save(nom);
 
+                    //// Construction du message de fin de partie
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(binding.getRoot().getContext());
-                builder.setMessage(nom +" Your score ="+Score);
+                builder.setMessage(nom +" Votre score = "+Score);
                 builder.setTitle("Game Over");
                 builder.setCancelable(false);
-                builder.setPositiveButton("go back to menu", (dialogInterface, i) -> {
+                builder.setPositiveButton("Revenir au Menu", (dialogInterface, i) -> {
                     Intent intent= new Intent(Game.this,MainActivity.class);
 
                     startActivity(intent);
                 });
-                builder.setNeutralButton("start Again", (dialogInterface, i) -> {
-                    if(enable ==false){
+                builder.setNeutralButton("Recommencer", (dialogInterface, i) -> {
+                    if(!enable){
 
                         Intent intent= new Intent(Game.this,Game.class);
                         intent.putExtra("name",nom);
@@ -316,32 +344,42 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
 
 
                 });
-                runOnUiThread(() -> builder.show());
+
+                //// Affichage du message de fin de partie
+                runOnUiThread(builder::show);
 
 
                 }else{
-                    Bitmap head_calib =turnbitmap(snake_item_list.get(0).sens,head,scale,false);
-                    canvas = holder.lockCanvas();
-                    canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-                    canvas.drawBitmap(head_calib,snake_item_list.get(0).getPosx()-body_size*scale,snake_item_list.get(0).getPosY()-body_size*scale,null);
 
-                    canvas.drawBitmap(food,food_pos_x-body_size*scale,food_pos_y-body_size*scale,null);
-                    canvas.drawBitmap(coin,coin_pos_x-body_size*scale,coin_pos_y-body_size*scale,null);
+                    //// Actualisation du board
 
-                    String buffersens=snake_item_list.get(0).sens;
+                    Bitmap head_calib = turnbitmap(snake_item_list.get(0).sens,head, false);   //// Rotation de la tête du serpent
+                    canvas = holder.lockCanvas();   //// Verrouillage du canvas
+                    canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);   //// Effacement du canvas
+                    canvas.drawBitmap(head_calib,snake_item_list.get(0).getPosx()-body_size*scale,snake_item_list.get(0).getPosY()-body_size*scale,null);   //// Affichage de la tête du serpent
+
+                    canvas.drawBitmap(food,food_pos_x-body_size*scale,food_pos_y-body_size*scale,null);  //// Affichage de la nourriture
+                    canvas.drawBitmap(coin,coin_pos_x-body_size*scale,coin_pos_y-body_size*scale,null);  //// Affichage des pièces
+
+                    String buffersens=snake_item_list.get(0).sens;  //// Rotation du corps du serpent
+
+                    //// Rotation du corps du serpent
+
                     for (int i = 1; i < snake_item_list.size(); i++) {
                         String buffersenstemp = snake_item_list.get(i).sens;
                         snake_item_list.get(i).sens=buffersens;
                         buffersens = buffersenstemp;
                         int getposXtemp = snake_item_list.get(i).getPosx();
                         int getposYtemp = snake_item_list.get(i).getPosY();
-                        Bitmap body_calib = turnbitmap(snake_item_list.get(i).sens,body,scale ,false)  ;
-                        Bitmap tail_calib = turnbitmap(snake_item_list.get(i).sens,tail,scale,true) ;
+                        Bitmap body_calib = turnbitmap(snake_item_list.get(i).sens,body, false)  ;
+                        Bitmap tail_calib = turnbitmap(snake_item_list.get(i).sens,tail, true) ;
                         snake_item_list.get(i).setPosx(head_pos_x);
                         snake_item_list.get(i).setPosY(head_pos_y);
+
+                        //// Affichage du corps du serpent
+
                         if (i==(snake_item_list.size()-1))
                         {
-
                             canvas.drawBitmap(tail_calib,snake_item_list.get(i).getPosx()-body_size*scale,snake_item_list.get(i).getPosY()-body_size*scale,null);
                         }
                         else
@@ -354,33 +392,35 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                         command =true;
 
                     }
-                    holder.unlockCanvasAndPost(canvas);
+                    holder.unlockCanvasAndPost(canvas);     //// Déverrouillage du canvas
 
 
                 }
             }
             }
-        },1000-speed,1000-speed);
+        },1000-speed,1000-speed);   //// Actualisation du board
 
 
     }
 
+
+    //// Grossissement du serpent
 
     private void grow(){
 
         snake_item snakeItem = new snake_item(0,0);
         snake_item_list.add(snakeItem);
         Score++;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                score.setText(String.valueOf(Score));
-            }
-        });
+        runOnUiThread(() -> score.setText(String.valueOf(Score)));
     }
+
+    //// Vérification de la fin de partie
     private boolean checkgameOver(int headposx,int headposy){
 
         boolean gameover = false;
+
+        //// Si le serpent touche les bords du board ou se mord la queue, la partie est terminée
+
         if(snake_item_list.get(0).getPosx()<0 || snake_item_list.get(0).getPosY()<0 || snake_item_list.get(0).getPosx() >= display.getWidth() || snake_item_list.get(0).getPosY() >= display.getHeight()){
             gameover =true;
 
@@ -398,37 +438,26 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         }
         return  gameover;
     }
-    private Paint createbodycolor(){
 
-        if(pointcolor==null){
-            pointcolor = new Paint();
-            pointcolor.setColor(Color.MAGENTA);
-            pointcolor.setStyle(Paint.Style.FILL);
-            pointcolor.setAntiAlias(true);
-
-
-        }
-        return pointcolor;
-
-    }
-
-    private Bitmap turnbitmap(String sens, Bitmap img_bitmap,int scale,boolean inverse)
+    //// Rotation des images du serpent
+    private Bitmap turnbitmap(String sens, Bitmap img_bitmap, boolean inverse)
     {
 
         Matrix matrix = new Matrix();
 
         Bitmap ret = img_bitmap ;
+
+
         switch (sens){
 
             case "right":
                 if(inverse)
                 {
-                    matrix.postRotate(90);
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
+                    matrix.postRotate(90);  //// Rotation de 90°
                 }else{
-                    matrix.postRotate(-90);
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
+                    matrix.postRotate(-90); //// Rotation de -90°
                 }
+                ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true); //// Création de l'image
 
                 break;
 
@@ -437,12 +466,11 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                 if(inverse)
                 {
                     matrix.postRotate(-90);
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
                 }else{
 
                     matrix.postRotate(90);
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
                 }
+                ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
 
                 break;
 
@@ -451,23 +479,16 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
                 if(inverse)
                 {
                     matrix.postRotate(180);
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
-                }else{
-
-
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
                 }
+                ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
 
                 break;
             case "down":
-                if(inverse)
-                {
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
-                }else{
+                if (!inverse) {
 
                     matrix.postRotate(180);
-                    ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
                 }
+                ret= Bitmap.createBitmap(img_bitmap,0,0, img_bitmap.getWidth(),img_bitmap.getHeight(),matrix,true);
 
                 break;
 
@@ -475,15 +496,17 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         return ret;
     }
 
-    private Bitmap get_Bitmap(int img, int scale){
 
-        Bitmap tobescaledret = BitmapFactory.decodeResource(binding.keys.getResources(),img ) ;
-        Bitmap ret = Bitmap.createScaledBitmap(tobescaledret,tobescaledret.getWidth()*scale,tobescaledret.getHeight()*scale,true);
+    //// Récupération des images du jeu
+    private Bitmap get_Bitmap(int img){
+
+        Bitmap tobescaledret = BitmapFactory.decodeResource(binding.keys.getResources(),img ) ; //// Récupération de l'image à redimensionner
 
 
-        return ret;
+        return Bitmap.createScaledBitmap(tobescaledret, tobescaledret.getWidth(), tobescaledret.getHeight(),true);
     }
 
+    //// Sauvegarde des scores, des noms des joueurs et des pièces
     private void save(String username){
 
         int money_temp =Data.getInt("MONEY_VALUE",0);
@@ -493,14 +516,14 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
         boolean save_done =false;
         for (int i = 0; i < player_count; i++) {
             String key_name ="NAME"+i;
-            if (username == Data.getString(key_name,"")){
+            if (Objects.equals(username, Data.getString(key_name, ""))){
                 String key_score = "SCORE"+i;
                 editor.putInt(key_score,Score);
                     save_done=true;
 
             }
         }
-        if (save_done == false){
+        if (!save_done){
 
             player_count++;
             String scoreid = "SCORE"+player_count;
@@ -509,7 +532,6 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback {
             editor.putString(nameid,username);
             editor.putInt("NB_PLAYER",player_count);
             editor.putInt("MONEY_VALUE",moneytosend);
-            save_done=true;
 
         }
         editor.apply();

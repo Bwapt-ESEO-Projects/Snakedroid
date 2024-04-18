@@ -42,15 +42,20 @@ public class Shop extends AppCompatActivity {
 
         binding = ActivityShopBinding.inflate(getLayoutInflater());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        binding = ActivityShopBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //// Récupération des données du jeu et du magasin
 
         Context context_shop = binding.getRoot().getContext();
         DataGame = getSharedPreferences("Game", MODE_PRIVATE);
         DataShop = getSharedPreferences("Shop", MODE_PRIVATE);
 
+        //// Récupération des cosmétiques achetés
+
         Set<String> boughtList = DataShop.getStringSet("BOUGHT", new HashSet<>(Arrays.asList("head0", "body0", "tail0", "angle0", "hat0")));
         boughtListSet = new HashSet<>(boughtList);
+
+        //// Récupération des données du joueur
 
         currentMoney = DataGame.getInt("MONEY_VALUE", 0);
         equippedHeadImg = DataGame.getInt("IMG_HEAD", R.drawable.snake_head);
@@ -59,13 +64,19 @@ public class Shop extends AppCompatActivity {
         equippedAngleImg = DataGame.getInt("IMG_ANGLE", R.drawable.snake_body_angle);
         equippedHatImg = DataGame.getInt("IMG_HAT", R.drawable.wizard_hat);
 
+        //// Affichage de l'argent du joueur
+
         binding.money.setText("Money : " + currentMoney);
+
+        //// Initialisation des catégories de cosmétiques
 
         List<CosmeticsFragment> cosmeticHeads = new ArrayList<>();
         List<CosmeticsFragment> cosmeticBodies = new ArrayList<>();
         List<CosmeticsFragment> cosmeticTails = new ArrayList<>();
         List<CosmeticsFragment> cosmeticAngles = new ArrayList<>();
         List<CosmeticsFragment> cosmeticHats = new ArrayList<>();
+
+        //// Ajout des cosmétiques dans les catégories
 
         cosmeticHeads.add(CosmeticsFragment.newInstance("0", R.drawable.snake_head));
         cosmeticBodies.add(CosmeticsFragment.newInstance("0", R.drawable.snake_body));
@@ -84,6 +95,8 @@ public class Shop extends AppCompatActivity {
         cosmeticTails.add(CosmeticsFragment.newInstance("10", R.drawable.snake_tail_desert));
         cosmeticAngles.add(CosmeticsFragment.newInstance("10", R.drawable.snake_body_desert_angle));
         cosmeticHats.add(CosmeticsFragment.newInstance("10", R.drawable.slow_chronometer));
+
+        //// Ajout des cosmétiques dans la vue
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -118,7 +131,8 @@ public class Shop extends AppCompatActivity {
         }
         ft.commit();
 
-        // Post a Runnable to the main thread's message queue
+        //// Initialisation des cosmétiques achetés et équipés
+
         binding.getRoot().post(() -> {
             setBoughtList();
             // Call checkIfEquipped for each equipped cosmetic item
@@ -130,8 +144,12 @@ public class Shop extends AppCompatActivity {
 
         });
 
+        //// Intent pour le bouton de retour vers le menu principal
+
         Intent intent_main = new Intent(Shop.this,MainActivity.class);
         binding.valider.setOnClickListener(view -> {
+
+            //// Sauvegarde des données du joueur
 
             SharedPreferences.Editor gameEditor = DataGame.edit();
 
@@ -142,6 +160,8 @@ public class Shop extends AppCompatActivity {
             gameEditor.putInt("IMG_ANGLE", equippedAngleImg);
             gameEditor.putInt("IMG_HAT", equippedHatImg);
             gameEditor.apply();
+
+            //// Sauvegarde des cosmétiques achetés
 
             SharedPreferences.Editor shopEditor = DataShop.edit();
             shopEditor.putStringSet("BOUGHT", boughtListSet);
@@ -156,11 +176,15 @@ public class Shop extends AppCompatActivity {
 
         super.onResume();
 
+        //// Actualisation des cosmétiques équipés
+
         checkIfEquipped(getEquippedTag(equippedHeadImg, "head"));
         checkIfEquipped(getEquippedTag(equippedBodyImg, "body"));
         checkIfEquipped(getEquippedTag(equippedTailImg, "tail"));
         checkIfEquipped(getEquippedTag(equippedAngleImg, "angle"));
         checkIfEquipped(getEquippedTag(equippedHatImg, "hat"));
+
+        //// Actualisation de l'argent du joueur et du statut des cosmétiques (équipés et/ou achetés)
 
         setFragmentOnClickListener("head0");
         setFragmentOnClickListener("head1");
@@ -178,10 +202,15 @@ public class Shop extends AppCompatActivity {
         setFragmentOnClickListener("hat1");
         setFragmentOnClickListener("hat2");
 
+        //// Affichage de l'argent du joueur
+
         binding.money.setText("Money : " + currentMoney);
     }
 
     private void setBoughtList() {
+
+        //// Affichage des cosmétiques achetés
+
         for (String tag : boughtListSet) {
             CosmeticsFragment frag = (CosmeticsFragment) getSupportFragmentManager().findFragmentByTag(tag);
             if (frag != null) {
@@ -194,6 +223,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private int getEquippedTagNum(int img) {
+
+        //// Récupération du numéro du cosmétique équipé
+
         if (img == R.drawable.snake_head || img == R.drawable.snake_body || img == R.drawable.snake_tail || img == R.drawable.snake_body_angle || img == R.drawable.wizard_hat) {
             return 0;
         } else if (img == R.drawable.snake_head_ice || img == R.drawable.snake_body_ice || img == R.drawable.snake_tail_ice || img == R.drawable.snake_body_ice_angle || img == R.drawable.speed_chronometer) {
@@ -206,6 +238,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private String getEquippedTag(int img, String categoryPrefix) {
+
+        //// Récupération du tag du cosmétique équipé
+
         int num = getEquippedTagNum(img);
         if (num == -1) {
             return null;
@@ -214,6 +249,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private int getEquippedHeadImg(String tag) {
+
+        //// Récupération de l'image de la tête équipée
+
         switch (tag) {
             case "head0":
                 return R.drawable.snake_head;
@@ -227,6 +265,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private int getEquippedBodyImg(String tag) {
+
+        //// Récupération de l'image du corps équipée
+
         switch (tag) {
             case "body0":
                 return R.drawable.snake_body;
@@ -240,6 +281,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private int getEquippedTailImg(String tag) {
+
+        //// Récupération de l'image de la queue équipée
+
         switch (tag) {
             case "tail0":
                 return R.drawable.snake_tail;
@@ -253,6 +297,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private int getEquippedAngleImg(String tag) {
+
+        //// Récupération de l'image de l'angle équipée
+
         switch (tag) {
             case "angle0":
                 return R.drawable.snake_body_angle;
@@ -266,6 +313,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private int getEquippedHatImg(String tag) {
+
+        //// Récupération de l'image du chapeau équipée
+
         switch (tag) {
             case "hat0":
                 return R.drawable.wizard_hat;
@@ -279,6 +329,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private void saveEquippedImg(String tag) {
+
+        //// Sauvegarde de l'image du cosmétique équipé
+
         String categoryPrefix = tag.substring(0, tag.length() - 1);
 
         switch (categoryPrefix) {
@@ -301,6 +354,9 @@ public class Shop extends AppCompatActivity {
     }
 
     private void checkIfEquipped(String tag) {
+
+        //// Vérification si le cosmétique est équipé et affichage de la couleur du bouton
+
         CosmeticsFragment frag = (CosmeticsFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (frag != null && frag.getView() != null) {
             frag.setEquipped(true);
@@ -316,11 +372,22 @@ public class Shop extends AppCompatActivity {
     }
 
     private void setFragmentOnClickListener(String tag) {
+
+        //// Détection du clic sur un cosmétique
+
         CosmeticsFragment frag = (CosmeticsFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (frag != null && frag.getView() != null) {
+
+            //// Récupération du prix du cosmétique et du bouton
+
             View cosmeticButtonView = frag.getView().findViewById(R.id.cosmetics_button);
             TextView cosmeticPriceView = frag.getView().findViewById(R.id.cosmetics_price);
+
+
             cosmeticButtonView.setOnClickListener(v -> {
+
+                //// Si le cosmétique n'est pas acheté et que le joueur a assez d'argent, alors le cosmétique est acheté et équipé
+
                 if (!frag.getBought() && currentMoney >= frag.getPrice()) {
                     currentMoney = currentMoney - frag.getPrice();
                     unequip(tag.substring(0, tag.length() - 1));
@@ -332,8 +399,11 @@ public class Shop extends AppCompatActivity {
                     cosmeticPriceView.setCompoundDrawables(null, null, null, null);
                     binding.money.setText("Money : " + currentMoney);
                 }
+
+                //// Si le cosmétique est acheté, alors le cosmétique est équipé
+
                 if (frag.getBought()) {
-                    unequip(tag.substring(0, tag.length() - 1));
+                    unequip(tag.substring(0, tag.length() - 1));    // déséquipper toutes les parties de la catégorie avant d'équiper la nouvelle
                     frag.setEquipped(true);
                     resetBackgrounds(tag.substring(0, tag.length() - 1));
                     v.setBackgroundColor(getResources().getColor(R.color.green));
@@ -343,15 +413,22 @@ public class Shop extends AppCompatActivity {
     }
 
     private void unequip(String categoryPrefix) {
-        for (int i = 0; i < 3; i++) { // Assuming there are 3 fragments in each category
+
+        //// Déséquipper tous les cosmétiques de la catégorie
+
+        for (int i = 0; i < 3; i++) {
             CosmeticsFragment frag = (CosmeticsFragment) getSupportFragmentManager().findFragmentByTag(categoryPrefix + i);
             if (frag != null) {
                 frag.setEquipped(false);
             }
         }
     }
+
     private void resetBackgrounds(String categoryPrefix) {
-        for (int i = 0; i < 3; i++) { // Assuming there are 3 fragments in each category
+
+        //// Réinitialiser la couleur de fond de tous les cosmétiques de la catégorie
+
+        for (int i = 0; i < 3; i++) {
             CosmeticsFragment frag = (CosmeticsFragment) getSupportFragmentManager().findFragmentByTag(categoryPrefix + i);
             if (frag != null && frag.getView() != null) {
                 View view = frag.getView().findViewById(R.id.cosmetics_button);

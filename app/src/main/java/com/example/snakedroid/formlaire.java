@@ -10,11 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.example.snakedroid.databinding.FragmentFormlaireBinding;
 
+//// Fragment pour le formulaire de nom du joueur
 public class formlaire extends Fragment {
 
     private FragmentFormlaireBinding binding;
-    private String mParam1;
-
 
     public formlaire() {
         // Required empty public constructor
@@ -40,14 +39,11 @@ public class formlaire extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentFormlaireBinding.inflate(inflater,container,false);
 
-        binding.buttonValid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String text = binding.usernameText.getText().toString();
-                Intent intent = new Intent(getActivity(), Game.class);
-                intent.putExtra("name",text);
-                startActivity(intent);
-            }
+        binding.buttonValid.setOnClickListener(view -> {
+            String text = binding.usernameText.getText().toString();
+            Intent intent = new Intent(getActivity(), Game.class);
+            intent.putExtra("name",text);
+            startActivity(intent);
         });
 
         return binding.getRoot();
